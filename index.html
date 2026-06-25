@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="tk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="RUSLAND – Türkmen öwrenijiler üçin döredilen interaktiw rus dili öwreniş platformasy. Oýunlar, derejeleri we XP ulgamy bilen rus dilini öwreniň.">
+  <meta name="keywords" content="rusça öğren, türkmen, rus dili, RUSLAND, dil öğrenme">
+  <title>RUSLAND – Eğlenerek Rusça Öğren 🇹🇲🇷🇺</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🇷🇺</text></svg>">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <style>
+    /* ─── Açılış Sayfası Stilleri ─── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 100px 24px 60px;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ─── Bayraklar ─── */
+    .flags-area {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      margin-bottom: 40px;
+      justify-content: center;
+    }
+
+    .flag-block {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .flag-svg-tkm {
+      width: 100px;
+      height: 64px;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.4), 0 0 20px rgba(30,181,58,0.3);
+      animation: flagWave 3s ease-in-out infinite;
+    }
+
+    .flag-svg-rus {
+      width: 100px;
+      height: 64px;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.4), 0 0 20px rgba(204,0,0,0.3);
+      animation: flagWaveLeft 3s ease-in-out infinite;
+      animation-delay: 0.5s;
+    }
+
+    .flag-name {
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .flags-divider {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .flags-divider-line {
+      width: 2px;
+      height: 30px;
+      background: linear-gradient(to bottom, transparent, var(--accent-blue), transparent);
+    }
+
+    .flags-divider-icon {
+      font-size: 1.8rem;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    /* ─── Hero Başlık ─── */
+    .hero-brand {
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(3.5rem, 10vw, 6rem);
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      line-height: 1;
+      margin-bottom: 12px;
+      background: linear-gradient(135deg, #00D4FF 0%, #00FF88 50%, #FFD700 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      filter: drop-shadow(0 0 30px rgba(0,212,255,0.4));
+      animation: fadeInDown 0.8s ease forwards;
+    }
+
+    .hero-tagline {
+      font-size: clamp(1rem, 2.5vw, 1.4rem);
+      color: var(--text-secondary);
+      margin-bottom: 40px;
+      font-weight: 400;
+      animation: fadeInUp 0.8s ease 0.3s both;
+    }
+
+    .hero-tagline span {
+      color: var(--accent-blue);
+      font-weight: 600;
+    }
+
+    /* ─── Hero Butonları ─── */
+    .hero-buttons {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 60px;
+      animation: fadeInUp 0.8s ease 0.6s both;
+    }
+
+    /* ─── Özellik Kartları ─── */
+    .features-section {
+      padding: 80px 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .features-title {
+      text-align: center;
+      margin-bottom: 12px;
+    }
+
+    .features-sub {
+      text-align: center;
+      margin-bottom: 52px;
+      font-size: 1.05rem;
+      color: var(--text-secondary);
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 20px;
+    }
+
+    .feature-card {
+      padding: 32px 24px;
+      text-align: center;
+      cursor: default;
+    }
+
+    .feature-icon {
+      font-size: 2.8rem;
+      margin-bottom: 16px;
+      display: block;
+      animation: float 4s ease-in-out infinite;
+    }
+
+    .feature-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: var(--text-primary);
+      letter-spacing: 0.05em;
+    }
+
+    .feature-desc {
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* ─── Seviyeler Tanıtımı ─── */
+    .levels-preview {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin: 40px 0;
+      animation: fadeInUp 0.8s ease 0.9s both;
+    }
+
+    .level-pill {
+      padding: 10px 22px;
+      border-radius: var(--radius-full);
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 700;
+      border: 2px solid transparent;
+      backdrop-filter: blur(10px);
+      transition: var(--transition-normal);
+    }
+
+    .level-pill:hover { transform: translateY(-3px); }
+
+    .level-pill-a1 { background: rgba(0,255,136,0.1); border-color: rgba(0,255,136,0.4); color: #00FF88; }
+    .level-pill-a2 { background: rgba(0,212,255,0.1); border-color: rgba(0,212,255,0.4); color: #00D4FF; }
+    .level-pill-b1 { background: rgba(168,85,247,0.1); border-color: rgba(168,85,247,0.4); color: #A855F7; }
+    .level-pill-b2 { background: rgba(255,215,0,0.1);  border-color: rgba(255,215,0,0.4);  color: #FFD700; }
+
+    /* ─── İstatistikler ─── */
+    .stats-row {
+      display: flex;
+      gap: 32px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin: 40px 0;
+      animation: fadeInUp 0.8s ease 1.2s both;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-number {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2.2rem;
+      font-weight: 900;
+      display: block;
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    /* ─── Footer ─── */
+    footer {
+      text-align: center;
+      padding: 40px 24px;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      position: relative;
+      z-index: 1;
+      border-top: 1px solid var(--glass-border);
+    }
+
+    footer strong { color: var(--accent-blue); }
+
+    /* ─── Modal Özelleştirme ─── */
+    .modal-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.5rem;
+      margin-bottom: 8px;
+      color: var(--text-primary);
+    }
+
+    .modal-subtitle {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      margin-bottom: 28px;
+    }
+
+    .age-options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .age-option {
+      padding: 12px;
+      background: var(--glass-bg);
+      border: 2px solid var(--glass-border);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: var(--transition-normal);
+      text-align: center;
+      font-family: 'Exo 2', sans-serif;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--text-primary);
+    }
+
+    .age-option:hover,
+    .age-option.selected {
+      border-color: var(--accent-blue);
+      background: var(--accent-blue-dim);
+      color: var(--accent-blue);
+    }
+
+    .auth-switch {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 0.88rem;
+      color: var(--text-muted);
+    }
+
+    .auth-switch a {
+      color: var(--accent-blue);
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .auth-switch a:hover { text-decoration: underline; }
+
+    /* ─── Scrolling Stats Banner ─── */
+    .marquee-section {
+      overflow: hidden;
+      padding: 20px 0;
+      border-top: 1px solid var(--glass-border);
+      border-bottom: 1px solid var(--glass-border);
+      margin: 40px 0;
+      background: rgba(0,212,255,0.03);
+    }
+
+    .marquee-track {
+      display: flex;
+      gap: 60px;
+      animation: marqueeScroll 20s linear infinite;
+      white-space: nowrap;
+    }
+
+    .marquee-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      flex-shrink: 0;
+    }
+
+    .marquee-item span { color: var(--accent-blue); }
+
+    @keyframes marqueeScroll {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+
+    @media (max-width: 600px) {
+      .flags-area { gap: 20px; }
+      .flag-svg-tkm, .flag-svg-rus { width: 76px; height: 48px; }
+      .hero-brand { font-size: clamp(3rem, 12vw, 5rem); }
+      .features-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ─── Yıldız Arkaplanı ─── -->
+<div class="stars-bg" id="stars-bg"></div>
+<div class="particle-field" id="particle-field"></div>
+
+<!-- ─── Hoş Geldiniz Banneri ─── -->
+<div class="welcome-banner" id="welcome-banner" style="display:none">
+  <h2>🎉 Hoş Geldiniz RUSLAND'a!</h2>
+  <p style="color:var(--text-secondary);margin-top:8px;font-size:1rem">Salam, <strong class="welcome-name" style="color:var(--accent-green)"></strong>!</p>
+</div>
+
+<!-- ─── Navbar ─── -->
+<nav class="navbar">
+  <a href="index.html" class="navbar-brand">🇷🇺 RUSLAND</a>
+  <ul class="navbar-nav">
+    <li><a href="#features">Aýratynlyklar</a></li>
+    <li><a href="#levels">Derejeleri</a></li>
+    <li>
+      <button class="btn btn-sm btn-secondary" id="btn-login" style="font-size:0.85rem">Giriş</button>
+    </li>
+    <li>
+      <button class="btn btn-sm btn-primary" id="btn-register" style="font-size:0.85rem">Hasap aç</button>
+    </li>
+  </ul>
+</nav>
+
+<!-- ─── HERO ─── -->
+<main>
+  <section class="hero">
+
+    <!-- Bayraklar -->
+    <div class="flags-area">
+      <div class="flag-block">
+        <svg class="flag-svg-tkm" viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+          <!-- Türkmenistan Bayrağı -->
+          <rect width="300" height="200" fill="#1EB53A"/>
+          <!-- Sol kırmızı şerit -->
+          <rect width="55" height="200" fill="#D22630"/>
+          <!-- Geleneksel motif beyaz çerçeve -->
+          <rect x="5" y="15" width="45" height="170" fill="#D22630" opacity="0.3"/>
+          <!-- 5 gül motifi (basitleştirilmiş) -->
+          <g fill="#F5F5DC" opacity="0.9">
+            <circle cx="27" cy="35" r="9"/>
+            <circle cx="27" cy="68" r="9"/>
+            <circle cx="27" cy="101" r="9"/>
+            <circle cx="27" cy="134" r="9"/>
+            <circle cx="27" cy="167" r="9"/>
+          </g>
+          <!-- Ay ve yıldız -->
+          <path d="M175,100 A35,35 0 1,1 175,99.9 Z M193,100 A18,18 0 1,0 193,99.9 Z" fill="white"/>
+          <polygon points="220,78 224,91 237,91 227,99 231,112 220,104 209,112 213,99 203,91 216,91" fill="white"/>
+          <polygon points="230,62 232,69 239,69 233,73 235,80 229,76 223,80 225,73 219,69 226,69" fill="white"/>
+          <polygon points="230,118 232,125 239,125 233,129 235,136 229,132 223,136 225,129 219,125 226,125" fill="white"/>
+          <polygon points="204,62 206,69 213,69 207,73 209,80 203,76 197,80 199,73 193,69 200,69" fill="white"/>
+          <polygon points="204,118 206,125 213,125 207,129 209,136 203,132 197,136 199,129 193,125 200,125" fill="white"/>
+        </svg>
+        <div class="flag-name">Türkmenistan 🇹🇲</div>
+      </div>
+
+      <div class="flags-divider">
+        <div class="flags-divider-line"></div>
+        <div class="flags-divider-icon">🤝</div>
+        <div class="flags-divider-line"></div>
+      </div>
+
+      <div class="flag-block">
+        <svg class="flag-svg-rus" viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+          <!-- Rusya Bayrağı - 3 yatay şerit -->
+          <rect width="300" height="200" fill="#FFFFFF"/>
+          <rect y="67" width="300" height="66" fill="#003399"/>
+          <rect y="133" width="300" height="67" fill="#CC0000"/>
+        </svg>
+        <div class="flag-name">Rusya 🇷🇺</div>
+      </div>
+    </div>
+
+    <!-- Ana Başlık -->
+    <h1 class="hero-brand">RUSLAND</h1>
+    <p class="hero-tagline">
+      <span>Türkmen</span> öwrenijiler üçin<br>
+      Eğlenerek Rusça Öğren 🚀
+    </p>
+
+    <!-- Seviye Tanıtımı -->
+    <div class="levels-preview" id="levels">
+      <div class="level-pill level-pill-a1">🌱 A1 Başlangyç</div>
+      <div class="level-pill level-pill-a2">📗 A2 Esas</div>
+      <div class="level-pill level-pill-b1">📘 B1 Orta</div>
+      <div class="level-pill level-pill-b2">📙 B2 Ösen</div>
+    </div>
+
+    <!-- CTA Butonları -->
+    <div class="hero-buttons">
+      <button class="btn btn-primary btn-lg animate-pulse-blue" id="btn-start">
+        🚀 Öwrenmäge Başla
+      </button>
+      <button class="btn btn-secondary btn-lg" id="btn-login-hero" onclick="document.getElementById('btn-login').click()">
+        🔐 Giriş
+      </button>
+    </div>
+
+    <!-- İstatistikler -->
+    <div class="stats-row">
+      <div class="stat-item">
+        <span class="stat-number neon-text-blue">4</span>
+        <span class="stat-label">Dereje</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number neon-text-green">10+</span>
+        <span class="stat-label">Ders</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number neon-text-gold">7</span>
+        <span class="stat-label">Oýun Görnüşi</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number" style="color:var(--accent-purple)">200+</span>
+        <span class="stat-label">Söz</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Kayan Banner ─── -->
+  <div class="marquee-section">
+    <div class="marquee-track">
+      <div class="marquee-item">🎮 <span>7 Oýun Görnüşi</span></div>
+      <div class="marquee-item">⭐ <span>XP Ulgamy</span></div>
+      <div class="marquee-item">🔒 <span>Dereje Ulgamy</span></div>
+      <div class="marquee-item">📱 <span>Mobil Uyum</span></div>
+      <div class="marquee-item">💾 <span>Offline Işleýär</span></div>
+      <div class="marquee-item">🇹🇲 <span>Türkmençe Açyklama</span></div>
+      <div class="marquee-item">🎯 <span>Anyk Netije</span></div>
+      <div class="marquee-item">🏆 <span>Üstünlik Rozetleri</span></div>
+      <!-- Duplicate for seamless loop -->
+      <div class="marquee-item">🎮 <span>7 Oýun Görnüşi</span></div>
+      <div class="marquee-item">⭐ <span>XP Ulgamy</span></div>
+      <div class="marquee-item">🔒 <span>Dereje Ulgamy</span></div>
+      <div class="marquee-item">📱 <span>Mobil Uyum</span></div>
+      <div class="marquee-item">💾 <span>Offline Işleýär</span></div>
+      <div class="marquee-item">🇹🇲 <span>Türkmençe Açyklama</span></div>
+      <div class="marquee-item">🎯 <span>Anyk Netije</span></div>
+      <div class="marquee-item">🏆 <span>Üstünlik Rozetleri</span></div>
+    </div>
+  </div>
+
+  <!-- ─── Özellikler Bölümü ─── -->
+  <section class="features-section container" id="features">
+    <h2 class="features-title gradient-text" data-anim="animate-fadeInDown">
+      Näme öwrenip bilersiňiz?
+    </h2>
+    <p class="features-sub" data-anim="animate-fadeIn">
+      7 dürli oýun görnüşi bilen rus dilini öwreniň
+    </p>
+
+    <div class="features-grid">
+      <div class="glass-card feature-card" data-anim="animate-fadeInUp" style="animation-delay:0.1s">
+        <span class="feature-icon">📚</span>
+        <div class="feature-title">Flashcard</div>
+        <div class="feature-desc">3D kart aýlamak bilen sözleri öwreniň. "Bilýän / Bilemok" ulgamy bilen öz ösüşiňizi görüň.</div>
+      </div>
+
+      <div class="glass-card feature-card" data-anim="animate-fadeInUp" style="animation-delay:0.2s">
+        <span class="feature-icon">❓</span>
+        <div class="feature-title">Sorag-Jogap</div>
+        <div class="feature-desc">4 saýlawly soraga jogap beriň. Bada-bat netije we düşündiriş alyň.</div>
+      </div>
+
+      <div class="glass-card feature-card" data-anim="animate-fadeInUp" style="animation-delay:0.3s">
+        <span class="feature-icon">🔗</span>
+        <div class="feature-title">Sürükle & Eşleşdir</div>
+        <div class="feature-desc">Rus sözlerini Türkmençe manysy bilen deňeşdiriň. Mobil goldaw bar.</div>
+      </div>
+
+      <div class="glass-card feature-card" data-anim="animate-fadeInUp" style="animation-delay:0.4s">
+        <span class="feature-icon">✏️</span>
+        <div class="feature-title">Boşlugy Doldur</div>
+        <div class="feature-desc">Jümlede boş ýeri dogry söz bilen dolduryň. Habar ulgamy bilen kömek alyň.</div>
+      </div>
+
+      <div class="glass-card feature-card" data-anim="animate-fadeInUp" style="animation-delay:0.5s">
+        <span class="feature-icon">🧠</span>
+        <div class="feature-title">Ýat Güýji</div>
+        <div class="feature-desc">Gabat gelýän kartlary tapyň. Wagtlaýyn we hereket sanaw ulgamy bar.</div>
+      </div>
+
+      <div class="glass-card feature-card" data-anim="animate-fadeInUp" style="animation-delay:0.6s">
+        <span class="feature-icon">🔍</span>
+        <div class="feature-title">Söz Gözle</div>
+        <div class="feature-desc">10×10 harplar ızgarasynda gizlenen sözleri tapyň.</div>
+      </div>
+
+      <div class="glass-card feature-card" data-anim="animate-fadeInUp" style="animation-delay:0.7s">
+        <span class="feature-icon">✅</span>
+        <div class="feature-title">Dogry / Ýalňyş</div>
+        <div class="feature-desc">Çalt oýun bilen jümleleriň dogrulygyny barlаň. Yzygider sistemi bar!</div>
+      </div>
+
+      <div class="glass-card feature-card" data-anim="animate-fadeInUp" style="animation-delay:0.8s">
+        <span class="feature-icon">⭐</span>
+        <div class="feature-title">XP Ulgamy</div>
+        <div class="feature-desc">Her oyun ve ders için XP kazanın. Yeni seviyelerin kilidini açın.</div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ─── Footer ─── -->
+<footer>
+  <p>🇹🇲 <strong>RUSLAND</strong> – Türkmen öwrenijiler üçin ✦ 2026</p>
+  <p style="margin-top:8px">Söz öwrenmek hiç haçan bu gadar gyzykly bolmandy! 🚀</p>
+</footer>
+
+<!-- ─────────────────────────────────────
+     KAYIT MODAL
+     ───────────────────────────────────── -->
+<div class="modal-backdrop" id="register-modal">
+  <div class="modal">
+    <button class="modal-close" aria-label="Kapat">✕</button>
+
+    <h2 class="modal-title">🎓 Hasap Aç</h2>
+    <p class="modal-subtitle">RUSLAND-a hoş geldiniz! Başlamak üçin hasap açyň.</p>
+
+    <form id="register-form" novalidate>
+      <div class="form-group">
+        <label class="form-label" for="reg-name">👤 Adyňyz</label>
+        <input class="form-input" id="reg-name" type="text"
+               placeholder="Adyňyzy ýazyň..." maxlength="30" required autocomplete="name">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">🎂 Ýaş topary</label>
+        <input type="hidden" id="reg-age" required>
+        <div class="age-options">
+          <div class="age-option" onclick="selectAge(this, '6-9')">🧒 6–9 ýaş</div>
+          <div class="age-option" onclick="selectAge(this, '10-13')">👦 10–13 ýaş</div>
+          <div class="age-option" onclick="selectAge(this, '14-17')">👧 14–17 ýaş</div>
+          <div class="age-option" onclick="selectAge(this, '18+')">🧑 18+ ýaş</div>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary w-full btn-lg" style="margin-top:8px">
+        🚀 Başla!
+      </button>
+    </form>
+
+    <div class="auth-switch">
+      Hasabyňyz barmy? <a id="switch-to-login">Giriş ediň</a>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────────────────────────────
+     GİRİŞ MODAL
+     ───────────────────────────────────── -->
+<div class="modal-backdrop" id="login-modal">
+  <div class="modal">
+    <button class="modal-close" aria-label="Kapat">✕</button>
+
+    <h2 class="modal-title">🔐 Giriş</h2>
+    <p class="modal-subtitle">Adyňyz bilen giriş ediň.</p>
+
+    <form id="login-form" novalidate>
+      <div class="form-group">
+        <label class="form-label" for="login-name">👤 Adyňyz</label>
+        <input class="form-input" id="login-name" type="text"
+               placeholder="Adyňyzy ýazyň..." maxlength="30" required autocomplete="name">
+      </div>
+
+      <button type="submit" class="btn btn-primary w-full btn-lg" style="margin-top:8px">
+        ▶ Giriş
+      </button>
+    </form>
+
+    <div class="auth-switch">
+      Hasabyňyz ýokmy? <a id="switch-to-register">Hasap açyň</a>
+    </div>
+  </div>
+</div>
+
+<!-- ─── Toast Container ─── -->
+<div class="toast-container" id="toast-container"></div>
+
+<!-- ─── Scripts ─── -->
+<script src="js/data/content.js"></script>
+<script src="js/app.js"></script>
+<script src="js/auth.js"></script>
+
+<script>
+  /* Yaş seçimi */
+  function selectAge(el, value) {
+    document.querySelectorAll('.age-option').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+    document.getElementById('reg-age').value = value;
+  }
+
+  /* Parçacık efekti */
+  const pf = document.getElementById('particle-field');
+  if (pf) {
+    for (let i = 0; i < 15; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      p.style.cssText = `
+        left: ${Math.random() * 100}%;
+        animation-duration: ${8 + Math.random() * 10}s;
+        animation-delay: ${Math.random() * 8}s;
+        background: ${['#00D4FF','#00FF88','#A855F7','#FFD700'][Math.floor(Math.random()*4)]};
+        width: ${1 + Math.random() * 3}px;
+        height: ${1 + Math.random() * 3}px;
+      `;
+      pf.appendChild(p);
+    }
+  }
+</script>
+</body>
+</html>

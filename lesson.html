@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="tk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="RUSLAND – Ders ve oyun motoru sayfası.">
+  <title>RUSLAND – Ders 📖</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📖</text></svg>">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/games.css">
+  <style>
+    /* ─── Ders Sayfası ─── */
+    .lesson-page {
+      min-height: 100vh;
+      padding-top: 80px;
+    }
+
+    /* ─── Üst Bar ─── */
+    .lesson-topbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 70px;
+      background: rgba(5, 8, 24, 0.9);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--glass-border);
+      z-index: var(--z-overlay);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 0 20px;
+    }
+
+    .lesson-back-btn {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      color: var(--text-secondary);
+      width: 38px;
+      height: 38px;
+      border-radius: var(--radius-full);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1.1rem;
+      transition: var(--transition-fast);
+      flex-shrink: 0;
+      text-decoration: none;
+    }
+
+    .lesson-back-btn:hover {
+      border-color: var(--accent-blue);
+      color: var(--accent-blue);
+    }
+
+    .lesson-topbar-info {
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .lesson-topbar-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.85rem;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .lesson-topbar-level {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    .lesson-topbar-xp {
+      flex-shrink: 0;
+    }
+
+    .lesson-xp-bar {
+      width: 120px;
+      height: 6px;
+      background: rgba(255,255,255,0.08);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+    }
+
+    .lesson-xp-fill {
+      height: 100%;
+      border-radius: var(--radius-full);
+      background: linear-gradient(90deg, var(--accent-blue), var(--accent-green));
+      transition: width 0.5s ease;
+    }
+
+    /* ─── Ders Seçim Ekranı ─── */
+    .lesson-select-screen {
+      padding: 40px 0;
+    }
+
+    .lesson-select-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .lesson-select-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2rem;
+      margin-bottom: 8px;
+    }
+
+    .lesson-select-meta {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    /* ─── Oyun Seçim ─── */
+    .game-select-section {
+      max-width: 760px;
+      margin: 0 auto 40px;
+      padding: 0 24px;
+    }
+
+    .game-select-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+      margin-bottom: 20px;
+      text-align: center;
+      letter-spacing: 0.05em;
+    }
+
+    .vocab-preview {
+      max-width: 760px;
+      margin: 0 auto 32px;
+      padding: 0 24px;
+    }
+
+    .vocab-preview-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+      letter-spacing: 0.05em;
+    }
+
+    .vocab-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .vocab-chip {
+      padding: 6px 14px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-full);
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: default;
+      transition: var(--transition-fast);
+    }
+
+    .vocab-chip:hover {
+      border-color: var(--accent-blue);
+      color: var(--accent-blue);
+    }
+
+    .vocab-chip-ru {
+      color: var(--accent-blue);
+      font-weight: 600;
+    }
+
+    .vocab-chip-arrow {
+      color: var(--text-muted);
+    }
+
+    .vocab-chip-tkm {
+      color: var(--text-secondary);
+    }
+
+    /* ─── Oyun Alanı ─── */
+    .game-play-area {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px;
+      min-height: calc(100vh - 80px);
+    }
+
+    /* ─── Oyun Tamamlama Ekranı ─── */
+    .complete-stars {
+      font-size: 2.5rem;
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 8px;
+    }
+
+    /* ─── Loading ─── */
+    .loading-screen {
+      position: fixed;
+      inset: 0;
+      background: var(--bg-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 20px;
+      z-index: 9999;
+      transition: opacity 0.5s ease;
+    }
+
+    .loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 3px solid rgba(0,212,255,0.2);
+      border-top-color: var(--accent-blue);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    .loading-text {
+      font-family: 'Orbitron', sans-serif;
+      color: var(--accent-blue);
+      font-size: 0.9rem;
+      letter-spacing: 0.1em;
+    }
+
+    /* Game complete overlay */
+    .game-complete-card .btn { min-width: 140px; }
+
+    @media (max-width: 600px) {
+      .game-select-section, .vocab-preview { padding: 0 16px; }
+      .lesson-xp-bar { width: 80px; }
+    }
+  </style>
+</head>
+<body>
+<div class="stars-bg" id="stars-bg"></div>
+
+<!-- ─── Loading ─── -->
+<div class="loading-screen" id="loading-screen">
+  <div style="font-size:3rem">📖</div>
+  <div class="loading-spinner"></div>
+  <div class="loading-text">DERS ÝÜKLENÝÄR...</div>
+</div>
+
+<!-- ─── Üst Bar ─── -->
+<div class="lesson-topbar">
+  <a href="dashboard.html" class="lesson-back-btn" title="Yza">←</a>
+
+  <div class="lesson-topbar-info">
+    <div class="lesson-topbar-title" id="topbar-lesson-title">Ders</div>
+    <div class="lesson-topbar-level" id="topbar-level-name">–</div>
+  </div>
+
+  <div class="lesson-topbar-xp">
+    <div style="display:flex;align-items:center;gap:8px">
+      <span class="xp-badge" style="font-size:0.78rem">⭐ <span id="topbar-xp">0</span></span>
+      <div class="lesson-xp-bar">
+        <div class="lesson-xp-fill" id="topbar-xp-fill" style="width:0%"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── Ana Sayfa İçeriği ─── -->
+<main class="lesson-page" id="lesson-main">
+  <!-- JS tarafından doldurulur -->
+</main>
+
+<!-- ─── Oyun Tamamlama Overlay ─── -->
+<div class="game-complete-screen" id="game-complete-screen">
+  <div class="game-complete-card">
+    <span class="game-complete-icon" id="complete-icon">🎉</span>
+    <h2 class="game-complete-title gradient-text" id="complete-title">Gutlaýarys!</h2>
+    <div class="complete-stars" id="complete-stars">⭐⭐⭐</div>
+    <div class="game-complete-xp" id="complete-xp">+50 XP ⭐</div>
+
+    <div class="game-complete-stats">
+      <div class="game-complete-stat">
+        <div class="game-complete-stat-val" id="complete-score">100%</div>
+        <div class="game-complete-stat-label">Bal</div>
+      </div>
+      <div class="game-complete-stat">
+        <div class="game-complete-stat-val" id="complete-game-type">–</div>
+        <div class="game-complete-stat-label">Oýun</div>
+      </div>
+    </div>
+
+    <div class="flex-center gap-16 flex-wrap">
+      <button class="btn btn-secondary" onclick="LessonEngine.restartGame()">
+        🔄 Gaýtala
+      </button>
+      <button class="btn btn-primary" onclick="LessonEngine.nextGame()">
+        ▶ Indiki Oýun
+      </button>
+      <button class="btn btn-gold" onclick="LessonEngine.completeLesson()">
+        ✅ Dersi Tamamla
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ─── Ders Tamamlama Overlay ─── -->
+<div class="game-complete-screen" id="lesson-complete-screen">
+  <div class="game-complete-card" style="border-color:rgba(0,255,136,0.4);box-shadow:0 20px 60px rgba(0,0,0,0.5),0 0 60px rgba(0,255,136,0.15)">
+    <span class="game-complete-icon">🏆</span>
+    <h2 class="game-complete-title" style="color:var(--accent-green)">Ders Tamamlandı!</h2>
+
+    <div class="complete-stars">⭐⭐⭐</div>
+
+    <div class="game-complete-xp" id="lesson-complete-xp">+70 XP ⭐</div>
+
+    <p style="color:var(--text-secondary);margin:12px 0;font-size:0.95rem" id="lesson-complete-msg">
+      Ajaýyp iş etdiňiz! Şu dersi tamamladyňyz.
+    </p>
+
+    <div class="flex-center gap-16 flex-wrap mt-16">
+      <a href="dashboard.html" class="btn btn-secondary">
+        📊 Panele git
+      </a>
+      <button class="btn btn-success" onclick="LessonEngine.loadNextLesson()">
+        ▶ Indiki Derse
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ─── Konfeti Container ─── -->
+<div class="confetti-container" id="confetti-container" style="display:none"></div>
+
+<!-- ─── Toast ─── -->
+<div class="toast-container" id="toast-container"></div>
+
+<!-- ─── Scripts ─── -->
+<script src="js/data/content.js"></script>
+<script src="js/app.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/levels.js"></script>
+<script src="js/games/flashcard.js"></script>
+<script src="js/games/quiz.js"></script>
+<script src="js/games/dragdrop.js"></script>
+<script src="js/games/fillblank.js"></script>
+<script src="js/games/memory.js"></script>
+<script src="js/games/wordsearch.js"></script>
+<script src="js/games/truefalse.js"></script>
+
+<script>
+'use strict';
+
+/* ─── Oyun Türü Adları ─── */
+const GAME_NAMES = {
+  flashcard: '📚 Flashcard',
+  quiz:      '❓ Sorag-Jogap',
+  dragdrop:  '🔗 Sürükle-Bırak',
+  fillblank: '✏️ Boşlugy Doldur',
+  memory:    '🧠 Ýat Güýji',
+  wordsearch:'🔍 Söz Gözle',
+  truefalse: '✅ Dogry/Ýalňyş'
+};
+
+/* ─── Ders Motoru ─── */
+const LessonEngine = {
+  lesson: null,
+  level:  null,
+  currentGameIndex: 0,
+  gameContainer: null,
+  finalScore: 0,
+  finalGameType: '',
+
+  init() {
+    if (!Router.requireAuth()) return;
+
+    const lessonId = Router.getParam('id');
+    if (!lessonId) { Router.go('dashboard.html'); return; }
+
+    const found = getLessonById(lessonId);
+    if (!found) { Router.go('dashboard.html'); return; }
+
+    this.lesson = found.lesson;
+    this.level  = found.level;
+    this.currentGameIndex = 0;
+
+    this.updateTopbar();
+    this.showLessonSelect();
+
+    // Loading'i gizle
+    setTimeout(() => {
+      const ls = document.getElementById('loading-screen');
+      if (ls) { ls.style.opacity = '0'; setTimeout(() => ls.remove(), 500); }
+    }, 600);
+  },
+
+  updateTopbar() {
+    const user = AppState.getUser();
+    document.getElementById('topbar-lesson-title').textContent = this.lesson.icon + ' ' + this.lesson.title;
+    document.getElementById('topbar-level-name').textContent   = this.level.name;
+    document.getElementById('topbar-xp').textContent           = user.xp || 0;
+
+    // XP fill
+    const pct = LevelSystem.getLevelProgress(this.level.id);
+    document.getElementById('topbar-xp-fill').style.width = pct + '%';
+  },
+
+  /* ─── Ders Seçim Ekranı ─── */
+  showLessonSelect() {
+    const main = document.getElementById('lesson-main');
+    const vocab = this.lesson.vocabulary || [];
+    const games = this.lesson.games || [];
+
+    main.innerHTML = `
+      <div class="container lesson-select-screen">
+        <div class="lesson-select-header animate-fadeInDown">
+          <div style="font-size:4rem;margin-bottom:16px;animation:float 3s ease-in-out infinite">${this.lesson.icon}</div>
+          <h1 class="lesson-select-title gradient-text">${this.lesson.title}</h1>
+          <div class="lesson-select-meta">${this.level.name} • ${vocab.length} söz • ${games.length} oýun</div>
+        </div>
+
+        <!-- Kelime Ön İzleme -->
+        <div class="vocab-preview animate-fadeInUp" style="animation-delay:0.2s">
+          <div class="vocab-preview-title">📖 BU DERSDE SÖZLER</div>
+          <div class="vocab-chips">
+            ${vocab.slice(0, 12).map(v => `
+              <div class="vocab-chip">
+                <span class="vocab-chip-ru">${v.ru}</span>
+                <span class="vocab-chip-arrow">→</span>
+                <span class="vocab-chip-tkm">${v.tkm}</span>
+                ${v.emoji ? `<span>${v.emoji}</span>` : ''}
+              </div>
+            `).join('')}
+            ${vocab.length > 12 ? `<div class="vocab-chip" style="color:var(--text-muted)">+${vocab.length - 12} söz</div>` : ''}
+          </div>
+        </div>
+
+        <!-- Oyun Seçimi -->
+        <div class="game-select-section animate-fadeInUp" style="animation-delay:0.4s">
+          <div class="game-select-title">🎮 OÝUN SAÝLAŇ</div>
+          <div class="game-type-grid">
+            ${games.map((gameType, i) => `
+              <div class="game-type-card" onclick="LessonEngine.startGame('${gameType}')"
+                   style="animation-delay:${0.1 * i}s" data-anim="animate-zoomIn">
+                <div class="game-type-icon">${this.getGameIcon(gameType)}</div>
+                <div class="game-type-name">${GAME_NAMES[gameType] || gameType}</div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+        <div class="text-center mt-32 animate-fadeIn" style="animation-delay:0.8s">
+          <button class="btn btn-primary btn-lg animate-pulse-blue" onclick="LessonEngine.startFirstGame()">
+            🚀 Dersi Başla!
+          </button>
+        </div>
+      </div>
+    `;
+  },
+
+  getGameIcon(gameType) {
+    const icons = {
+      flashcard: '📚', quiz: '❓', dragdrop: '🔗',
+      fillblank: '✏️', memory: '🧠', wordsearch: '🔍', truefalse: '✅'
+    };
+    return icons[gameType] || '🎮';
+  },
+
+  startFirstGame() {
+    const games = this.lesson.games || [];
+    if (games.length > 0) this.startGame(games[0]);
+  },
+
+  startGame(gameType) {
+    const main = document.getElementById('lesson-main');
+    main.innerHTML = `<div class="game-play-area" id="game-play-area"></div>`;
+    const container = document.getElementById('game-play-area');
+
+    const vocab = this.lesson.vocabulary || [];
+    const onComplete = (score, type) => this.onGameComplete(score, type, gameType);
+
+    switch (gameType) {
+      case 'flashcard':
+        FlashcardGame.init(vocab, container, onComplete);
+        break;
+
+      case 'quiz':
+        const questions = this.lesson.quizQuestions || [];
+        if (questions.length === 0) {
+          Toast.warning('Bu oýun üçin sorag ýok');
+          this.showLessonSelect(); return;
+        }
+        QuizGame.init(questions, container, onComplete);
+        break;
+
+      case 'dragdrop':
+        const pairs = this.lesson.dragDropPairs || [];
+        if (pairs.length === 0) {
+          Toast.warning('Bu oýun üçin maglum ýok');
+          this.showLessonSelect(); return;
+        }
+        DragDropGame.init(pairs, container, onComplete);
+        break;
+
+      case 'fillblank':
+        const sentences = this.lesson.fillBlankSentences || [];
+        if (sentences.length === 0) {
+          Toast.warning('Bu oýun üçin maglum ýok');
+          this.showLessonSelect(); return;
+        }
+        FillBlankGame.init(sentences, container, onComplete);
+        break;
+
+      case 'memory':
+        const memPairs = this.lesson.memoryPairs || [];
+        if (memPairs.length === 0) {
+          Toast.warning('Bu oýun üçin maglum ýok');
+          this.showLessonSelect(); return;
+        }
+        MemoryGame.init(memPairs, container, onComplete);
+        break;
+
+      case 'wordsearch':
+        const wsWords = this.lesson.wordSearchWords || [];
+        if (wsWords.length === 0) {
+          Toast.warning('Bu oýun üçin maglum ýok');
+          this.showLessonSelect(); return;
+        }
+        WordSearchGame.init(wsWords, container, onComplete);
+        break;
+
+      case 'truefalse':
+        const tfQs = this.lesson.trueFalseQuestions || [];
+        if (tfQs.length === 0) {
+          Toast.warning('Bu oýun üçin maglum ýok');
+          this.showLessonSelect(); return;
+        }
+        TrueFalseGame.init(tfQs, container, onComplete);
+        break;
+
+      default:
+        Toast.error('Näbelli oýun görnüşi');
+        this.showLessonSelect();
+    }
+
+    // Mevcut oyun tipini takip et
+    this.currentGameType = gameType;
+  },
+
+  onGameComplete(score, type, gameType) {
+    this.finalScore    = score;
+    this.finalGameType = gameType;
+
+    // Puan göster
+    const stars = score >= 80 ? '⭐⭐⭐' : score >= 50 ? '⭐⭐' : '⭐';
+    const icon  = score >= 80 ? '🎉' : score >= 50 ? '😊' : '💪';
+    const xpEarned = Math.round((score / 100) * 30);
+
+    document.getElementById('complete-icon').textContent  = icon;
+    document.getElementById('complete-title').textContent = score >= 80 ? 'Ajaýyp!' : score >= 50 ? 'Gowy!' : 'Dowam et!';
+    document.getElementById('complete-stars').textContent = stars;
+    document.getElementById('complete-score').textContent = score + '%';
+    document.getElementById('complete-xp').textContent   = '+' + xpEarned + ' XP ⭐';
+    document.getElementById('complete-game-type').textContent = GAME_NAMES[gameType] || gameType;
+
+    const completeScreen = document.getElementById('game-complete-screen');
+    completeScreen.classList.add('active');
+
+    AppState.updateXP(xpEarned);
+    this.updateTopbar();
+    if (score >= 60) showXPPop(xpEarned);
+  },
+
+  restartGame() {
+    document.getElementById('game-complete-screen').classList.remove('active');
+    this.startGame(this.finalGameType);
+  },
+
+  nextGame() {
+    document.getElementById('game-complete-screen').classList.remove('active');
+    const games = this.lesson.games || [];
+    const idx   = games.indexOf(this.finalGameType);
+    const next  = games[idx + 1];
+    if (next) {
+      this.startGame(next);
+    } else {
+      this.showLessonComplete();
+    }
+  },
+
+  completeLesson() {
+    document.getElementById('game-complete-screen').classList.remove('active');
+    this.showLessonComplete();
+  },
+
+  showLessonComplete() {
+    const xpReward = this.lesson.xpReward || 50;
+    AppState.completeLesson(this.lesson.id, this.finalScore, xpReward);
+    this.updateTopbar();
+
+    document.getElementById('lesson-complete-xp').textContent = '+' + xpReward + ' XP ⭐';
+    document.getElementById('lesson-complete-msg').textContent =
+      `"${this.lesson.title}" dersini tamamladyňyz! ${xpReward} XP gazandyňyz.`;
+
+    document.getElementById('lesson-complete-screen').classList.add('active');
+    launchConfetti();
+    Toast.success('🏆 Ders tamamlandı! +' + xpReward + ' XP!');
+  },
+
+  loadNextLesson() {
+    // Bir sonraki dersi bul
+    const allLessons = getAllLessons();
+    const idx = allLessons.findIndex(l => l.id === this.lesson.id);
+    const next = allLessons[idx + 1];
+
+    if (next && LevelSystem.isLessonUnlocked(next.id)) {
+      Router.go('lesson.html', { id: next.id });
+    } else {
+      Router.go('dashboard.html');
+    }
+  }
+};
+
+/* ─── Başlat ─── */
+document.addEventListener('DOMContentLoaded', () => {
+  LessonEngine.init();
+});
+</script>
+</body>
+</html>
